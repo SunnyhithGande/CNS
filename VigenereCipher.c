@@ -12,7 +12,7 @@ int main()
     int ks = strlen(key);
     int i, j = 0;
     for(i = 0; plainText[i] != '\0'; i++) 
-	{
+    {
         plainText[i] = ((plainText[i] - 'A' + key[j % ks] - 'A') % 26) + 'A';
         j++;
     }
@@ -27,4 +27,3 @@ int main()
     printf("Decrypted Text: %s\n", plainText);
     return 0;
 }
-
