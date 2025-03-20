@@ -1,0 +1,110 @@
+Generate Private  key of A
+
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3 -out Private-Key-A.pem
+
+Display the Private Key
+
+cat Private-Key-A.pem
+openssl pkey -in Private-Key-A.pem -text
+
+Generate the User-A Public Key
+
+openssl pkey -in Private-Key-A.pem -out Public-Key-A.pem -pubout
+
+Display the Public Key
+
+openssl pkey -in Public-Key-A.pem -pubin -text
+
+
+Generate Private  key of B
+
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3 -out Private-Key-B.pem
+
+
+Display the Private Key
+
+cat Private-Key-B.pem
+openssl pkey -in Private-Key-B.pem -text
+
+Generate the User-B Public Key
+
+openssl pkey -in Private-Key-B.pem -out Public-Key-B.pem -pubout
+
+Display the Public Key
+
+openssl pkey -in Public-Key-B.pem -pubin -text
+
+List of files :  ls -l
+
+
+
+
+
+ Message digest 
+
+openssl dgst -sha1 message-ID.txt
+
+
+ Calculate the hash and sign the message
+
+openssl dgst -sha1 -sign Private-Key-A.pem -out sign-ID.bin msg.txt
+Encrypt The Message Using RSA, Use The Recipients Public Key
+
+openssl pkeyutl -encrypt -in msg.txt -pubin -inkey Public-Key-B.pem -out ciphertext-ID.bin
+
+To decrypt the received ciphertext: User-B uses its private keyboard
+
+openssl pkeyutl -decrypt -in ciphertext-ID.bin -inkey Private-Key-B.pem -out receivedtext.txt
+
+To verify the signature of a message: User-B uses A’s public Key
+
+openssl dgst -sha1 -verify Public-Key-A.pem -signature sign-ID.bin receivedtext.txt
+
+
+
+
+Diffie Hellman Secret Key Exchange using OpenSSL
+
+1. Generate the Diffie-Hellman global public parameters
+
+ openssl genpkey -genparam -algorithm DH -out dhp.pem
+
+2. Display the generated global public parameters, first in the encoded form, then in the text form:
+
+ cat dhp.pem///
+ openssl pkeyparam -in dhp.pem -text
+
+Each user now uses the public parameters to generate their own private and public key, saving them in the file dhkey1.pem (for user 1) and dhkey2.pem (for user 2)
+
+openssl genpkey -paramfile dhp.pem -out dhkey1.pem
+
+openssl pkey -in dhkey1.pem -text –noout
+
+openssl genpkey -paramfile dhp.pem -out dhkey2.pem
+
+openssl pkey -in dhkey2.pem -text –noout
+
+
+The users must exchange their public keys. First extract the public key into the file dhpub1.pem (and similar user 2 creates dh2pub.pem
+
+openssl pkey -in dhkey1.pem -pubout -out dhpub1.pem
+
+openssl pkey -pubin -in dhpub1.pem -text
+
+openssl pkey -in dhkey2.pem -pubout -out dhpub2.pem
+
+openssl pkey -pubin -in dhpub2.pem -text
+
+
+
+5. After exchanging public keys, i.e. the files dhpub1.pem and dhpub2.pem, each user can derive the shared secret.
+
+openssl pkeyutl -derive -inkey dhkey1.pem -peerkey dhpub2.pem -out secret1.bin
+
+openssl pkeyutl -derive -inkey dhkey2.pem -peerkey dhpub1.pem -out secret2.bin
+
+cmp secret1.bin secret2.bin
+
+xxd secret1.bin
+
+xxd secret2.bin
