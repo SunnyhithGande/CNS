@@ -1,53 +1,60 @@
 #include<stdio.h>
 #include<string.h>
-#include<stdlib.h>
 int main()
 {
-	int i,j,len,rails,count,code[20][20];
 	char str[20];
-	printf("Enter a Secret Message\n");
-	gets(str);
-	len=strlen(str);
-	printf("Enter the depth value");
-	scanf("%d",&rails);
-	for(i=0;i<rails;i++)
+	printf("Enter PT : ");
+	scanf("%s",str);
+	int depth;
+	printf("Enter depth: ");
+	scanf("%d",&depth);
+	int len = strlen(str);
+	int fence[depth][len];
+	int i,j,k;
+	for(i=0; i<depth; i++)
 	{
-		for(j=0;j<len;j++)
+		for(j=0; j<strlen(str); j++)
 		{
-			code[i][j]=0;
+			fence[i][j] = 0;
 		}
 	}
-	count=0;
+	i=0;
 	j=0;
-	while(j<len)
+	int flag;
+	for(j=0; j<strlen(str); j++)
 	{
-		if(count%2==0)
+		fence[i][j] = str[j];
+		if(i==0)
 		{
-			for(i=0;i<rails;i++)
-			{
-				code[i][j] = (int)str[j];
-				j++;
-			}
+			flag = 0;
+		}
+		else if(i==depth-1)
+		{
+			flag=1;
+		}
+		
+		if(flag == 0)
+		{
+			i++;
 		}
 		else
 		{
-			for(i=rails-2;i>0;i--)
-			{
-				code[i][j] = (int)str[j];
-				j++;
-			}
+			i--;
 		}
-		count++;
 	}
-	for(i=0;i<rails;i++)
+	char cipher[100];
+	k=0;
+	for(i=0; i<depth; i++)
 	{
-		for(j=0;j<len;j++)
+		for(j=0; j<strlen(str); j++)
 		{
-			if(code[i][j]!=0)
+			if(fence[i][j] != 0)
 			{
-				printf("%c",code[i][j]);
+				cipher[k] = (char)fence[i][j];
+				k++;
 			}
 		}
 	}
-	printf("\n");
+	
+	printf("The cipher Text is :%s",cipher);
 }
