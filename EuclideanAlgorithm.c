@@ -1,30 +1,20 @@
 #include<stdio.h>
+
+int euclidian(int a, int b)  // Moved above
+{
+	if(b == 0)
+		return a;
+	else
+		return euclidian(b, a % b);
+}
+
 int main()
 {
-	int a,b;
-	printf("Enter a number1--");
-	scanf("%d",&a);
-	printf("Enter a number2--");
-	scanf("%d",&b);
-	int c;
-	if(a>b)
-	{
-		c=Euclidean(a,b);
-	}
-	else
-	{
-		c = Euclidean(b,a);
-	}
-	printf("GCD of %d and %d: %d\n",a,b,c);
-}
-int Euclidean(int a,int b)
-{
-	if(b==0)
-	{
-		return a;
-	}
-	else
-	{
-		Euclidean(b,a&b);
-	}
+	int a, b;
+	scanf("%d %d", &a, &b);
+	
+	int ans = (a > b) ? euclidian(a, b) : euclidian(b, a);
+	
+	printf("GCD: %d\n", ans);
+	return 0;
 }
